@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ColourFit — Clothing Colour Matcher</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>ColourFit</h1>
+    <p>Find matching clothing colour combinations using an interactive avatar.</p>
+  </header>
+
+  <main>
+    <section class="controls">
+      <div class="picker">
+        <label for="baseColor">Pick base colour</label>
+        <input type="color" id="baseColor" value="#2b7a78" />
+        <input type="text" id="baseHex" value="#2b7a78" maxlength="7" />
+      </div>
+
+      <div class="scheme">
+        <label for="schemeSelect">Scheme</label>
+        <select id="schemeSelect">
+          <option value="complementary">Complementary</option>
+          <option value="analogous">Analogous</option>
+          <option value="triadic">Triadic</option>
+          <option value="monochrome">Monochrome</option>
+        </select>
+        <button id="suggestBtn">Suggest</button>
+      </div>
+
+      <div class="apply">
+        <label>Target part</label>
+        <div class="targets">
+          <label><input type="radio" name="part" value="shirt" checked /> Shirt</label>
+          <label><input type="radio" name="part" value="pants" /> Pants</label>
+          <label><input type="radio" name="part" value="scarf" /> Scarf</label>
+        </div>
+      </div>
+
+      <div class="swatches">
+        <label>Suggestions</label>
+        <div id="swatchContainer" class="swatch-grid"></div>
+      </div>
+
+      <div class="saved">
+        <button id="savePaletteBtn">Save Palette</button>
+        <div id="savedPalettes"></div>
+      </div>
+    </section>
+
+    <section class="avatar">
+      <div class="avatar-card">
+        <h2>Avatar</h2>
+        <!-- Simple inline SVG avatar with named parts -->
+        <svg id="avatarSvg" viewBox="0 0 300 500" width="300" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Avatar">
+          <!-- body -->
+          <ellipse cx="150" cy="280" rx="70" ry="90" fill="#ffd2a6" />
+          <!-- shirt -->
+          <g id="shirt" data-part="shirt">
+            <path d="M80 200 Q150 160 220 200 L220 260 Q150 300 80 260 Z" fill="#2b7a78" stroke="#333" stroke-width="1"/>
+            <!-- sleeves -->
+            <path d="M80 200 Q60 220 80 240" fill="#2b7a78" stroke="#333" stroke-width="1"/>
+            <path d="M220 200 Q240 220 220 240" fill="#2b7a78" stroke="#333" stroke-width="1"/>
+          </g>
+
+          <!-- pants -->
+          <g id="pants" data-part="pants">
+            <path d="M120 300 L180 300 L190 410 L110 410 Z" fill="#3b2f2f" stroke="#333" stroke-width="1"/>
+          </g>
+
+          <!-- scarf -->
+          <g id="scarf" data-part="scarf">
+            <path d="M120 190 Q150 210 180 190 Q150 230 120 190 Z" fill="#d64545" stroke="#333" stroke-width="1" />
+          </g>
+
+          <!-- head -->
+          <circle cx="150" cy="130" r="60" fill="#ffd2a6" stroke="#333" stroke-width="1"/>
+          <!-- hair -->
+          <path d="M90 100 Q150 60 210 100 Q180 80 150 80 Q120 80 90 100 Z" fill="#3a2b2b"/>
+          <!-- eyes -->
+          <circle cx="135" cy="130" r="6" fill="#111"/>
+          <circle cx="165" cy="130" r="6" fill="#111"/>
+        </svg>
+
+        <div class="legend">
+          <small>Click a suggestion to apply it to the selected part.</small>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>ColourFit — demo implementation</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
