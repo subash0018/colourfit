@@ -1,5 +1,4 @@
 // ColourFit - simple colour scheme generator and avatar applicator
-
 // Utility: hex <-> HSL conversions
 function hexToRgb(hex) {
   hex = hex.replace('#','');
@@ -50,7 +49,6 @@ function hslToRgb({h,s,l}) {
 }
 function hslToHex(hsl){ return rgbToHex(hslToRgb(hsl)); }
 function hexToHsl(hex){ return rgbToHsl(hexToRgb(hex)); }
-
 // Scheme generation
 function generateScheme(hex, mode) {
   const base = hexToHsl(hex);
@@ -72,7 +70,6 @@ function generateScheme(hex, mode) {
   // include base as first
   return [hex, ...results];
 }
-
 // DOM wiring
 const baseColorInput = document.getElementById('baseColor');
 const baseHexInput = document.getElementById('baseHex');
@@ -81,11 +78,9 @@ const suggestBtn = document.getElementById('suggestBtn');
 const swatchContainer = document.getElementById('swatchContainer');
 const savePaletteBtn = document.getElementById('savePaletteBtn');
 const savedPalettes = document.getElementById('savedPalettes');
-
 function getSelectedPart() {
   return document.querySelector('input[name="part"]:checked').value;
 }
-
 function applyColorToPart(partId, color) {
   const el = document.getElementById(partId);
   if (!el) return;
