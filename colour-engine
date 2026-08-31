@@ -1,0 +1,261 @@
+import {
+    PINTEREST_PALETTE_2026
+} from "../data/colourPalette.js";
+
+
+export function calculateColourScore(
+    outfit
+) {
+
+
+    if (
+        !outfit ||
+        outfit.length === 0
+    ) {
+
+        return {
+
+            total: 0,
+
+            harmony: 0,
+
+            contrast: 0,
+
+            trend: 0,
+
+            balance: 0,
+
+            matchedTrend: null
+
+        };
+
+    }
+
+
+    /*
+        Get all product colours
+    */
+
+    const colours =
+
+        outfit.flatMap(
+            product =>
+                product.colors || []
+        );
+
+
+    /*
+        Unique HEX colours
+    */
+
+    const uniqueHex =
+
+        new Set(
+            colours.map(
+                colour =>
+                    colour.hex
+            )
+        );
+
+
+    /*
+        =========================
+        COLOUR HARMONY
+        =========================
+    */
+
+    let harmony = 80;
+
+
+    if (
+        uniqueHex.size === 1
+    ) {
+
+        harmony = 78;
+
+    }
+
+
+    else if (
+        uniqueHex.size === 2
+    ) {
+
+        harmony = 94;
+
+    }
+
+
+    else if (
+        uniqueHex.size === 3
+    ) {
+
+        harmony = 90;
+
+    }
+
+
+    else if (
+        uniqueHex.size >= 4
+    ) {
+
+        harmony = 76;
+
+    }
+
+
+
+    /*
+        =========================
+        CONTRAST
+        =========================
+    */
+
+    let contrast = 80;
+
+
+    if (
+        uniqueHex.size === 2
+    ) {
+
+        contrast = 92;
+
+    }
+
+
+    else if (
+        uniqueHex.size === 3
+    ) {
+
+        contrast = 89;
+
+    }
+
+
+
+    /*
+        =========================
+        BALANCE
+        =========================
+    */
+
+    let balance = 84;
+
+
+    if (
+        outfit.length >= 2
+    ) {
+
+        balance = 90;
+
+    }
+
+
+    if (
+        outfit.length >= 4
+    ) {
+
+        balance = 86;
+
+    }
+
+
+
+    /*
+        =========================
+        TREND SCORE
+        =========================
+    */
+
+    let trend = 70;
+
+    let matchedTrend = null;
+
+
+    for (
+        const paletteColour
+        of PINTEREST_PALETTE_2026
+    ) {
+
+
+        const match =
+
+            colours.some(
+                colour =>
+
+                    colour.name
+                        .toLowerCase()
+                        .includes(
+                            paletteColour.name
+                                .split(" ")[0]
+                                .toLowerCase()
+                        )
+            );
+
+
+        if (match) {
+
+            matchedTrend =
+                paletteColour;
+
+            trend =
+                paletteColour.trend;
+
+            break;
+
+        }
+
+    }
+
+
+
+    /*
+        =========================
+        FINAL SCORE
+        =========================
+
+        Harmony       35%
+        Contrast      20%
+        Balance       20%
+        Trend         15%
+        Consistency   10%
+    */
+
+
+    const consistency =
+        85;
+
+
+    const total = Math.round(
+
+        harmony * 0.35 +
+
+        contrast * 0.20 +
+
+        balance * 0.20 +
+
+        trend * 0.15 +
+
+        consistency * 0.10
+
+    );
+
+
+    return {
+
+        total,
+
+        harmony,
+
+        contrast,
+
+        balance,
+
+        trend,
+
+        consistency,
+
+        matchedTrend
+
+    };
+
+}
