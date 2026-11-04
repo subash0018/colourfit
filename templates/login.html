@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colour-Fit · Log in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF7;
+    --ink: #1B2440;
+    --muted: #5B6478;
+    --line: #D9DCE3;
+    --navy: #1B2440;
+    --olive: #6B7A3A;
+    --mustard: #D9A21B;
+    --teal: #1F7A74;
+    --charcoal: #3A3D44;
+    --error: #B3261E;
+    --success: #1F7A4D;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    font-family: "DM Sans", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    display: grid;
+    grid-template-columns: minmax(280px, 5fr) 6fr;
+    min-height: 100vh;
+  }
+
+  /* Swatch panel */
+  .swatches {
+    background: var(--navy);
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .brand {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #fff;
+    margin: 0;
+  }
+  .brand span { color: var(--mustard); }
+  .pairs { display: grid; gap: 14px; }
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 76px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.12);
+  }
+  .pair i { display: block; }
+  .pair b {
+    position: absolute;
+    left: 12px; bottom: 8px;
+    font-size: .8rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: rgba(255,255,255,.92);
+    color: var(--ink);
+  }
+  .tagline {
+    color: #C7CCDA;
+    margin: 0;
+    max-width: 30ch;
+    line-height: 1.5;
+  }
+
+  /* Form panel */
+  main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+  }
+  .card { width: 100%; max-width: 380px; }
+  h1 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-size: 2rem;
+    margin: 0 0 6px;
+    line-height: 1.15;
+  }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+
+  .tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 2px solid var(--line);
+    margin-bottom: 24px;
+  }
+  .tabs button {
+    background: none;
+    border: 0;
+    padding: 10px 0;
+    font: 500 1rem "DM Sans", sans-serif;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+  }
+  .tabs button[aria-selected="true"] {
+    color: var(--ink);
+    border-bottom-color: var(--mustard);
+  }
+
+  label { display: block; font-weight: 500; margin: 0 0 6px; }
+  .field { margin-bottom: 16px; }
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--ink);
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+  }
+  input:focus-visible, button:focus-visible {
+    outline: 3px solid var(--teal);
+    outline-offset: 2px;
+  }
+  .submit {
+    width: 100%;
+    margin-top: 8px;
+    padding: 13px;
+    font: 500 1rem "DM Sans", sans-serif;
+    color: #fff;
+    background: var(--navy);
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .submit:hover { background: #26325A; }
+
+  .msg {
+    padding: 11px 14px;
+    border-radius: 6px;
+    margin-bottom: 18px;
+    font-size: .95rem;
+    border-left: 4px solid;
+  }
+  .msg.error { background: #FCEDEC; color: var(--error); border-color: var(--error); }
+  .msg.success { background: #E8F5EE; color: var(--success); border-color: var(--success); }
+
+  [hidden] { display: none !important; }
+
+  @media (max-width: 760px) {
+    body { grid-template-columns: 1fr; }
+    .swatches { padding: 28px 24px; }
+    .pairs { grid-template-columns: 1fr 1fr; }
+    .pair { height: 64px; }
+    .tagline { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="swatches" aria-hidden="true">
+  <p class="brand">Colour<span>-</span>Fit</p>
+  <div class="pairs">
+    <div class="pair"><i style="background:#1B2440"></i><i style="background:#E9DFC9"></i><b>Navy + beige</b></div>
+    <div class="pair"><i style="background:#6B7A3A"></i><i style="background:#FFFFFF"></i><b>Olive + white</b></div>
+    <div class="pair"><i style="background:#D9A21B"></i><i style="background:#3A3D44"></i><b>Mustard + charcoal</b></div>
+    <div class="pair"><i style="background:#1F7A74"></i><i style="background:#9AA1AE"></i><b>Teal + grey</b></div>
+  </div>
+  <p class="tagline">Your wardrobe, matched. Log in to see what goes with what.</p>
+</aside>
+
+<main>
+  <div class="card">
+    <h1 id="title">Welcome back</h1>
+    <p class="sub" id="subtitle">Log in to open your wardrobe.</p>
+
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tab-login" aria-selected="true" aria-controls="login-form">Log in</button>
+      <button type="button" role="tab" id="tab-register" aria-selected="false" aria-controls="register-form">Create account</button>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="msg {{ category }}" role="alert">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form id="login-form" method="post" action="{{ url_for('login') }}">
+      <div class="field">
+        <label for="l-user">Username</label>
+        <input id="l-user" name="username" value="{{ username }}" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="l-pass">Password</label>
+        <input id="l-pass" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="submit" type="submit">Log in</button>
+    </form>
+
+    <form id="register-form" method="post" action="{{ url_for('register') }}" hidden>
+      <div class="field">
+        <label for="r-user">Choose a username</label>
+        <input id="r-user" name="username" value="{{ username }}" autocomplete="username" minlength="3" required>
+      </div>
+      <div class="field">
+        <label for="r-pass">Password</label>
+        <input id="r-pass" name="password" type="password" autocomplete="new-password" minlength="6" required>
+      </div>
+      <div class="field">
+        <label for="r-confirm">Repeat password</label>
+        <input id="r-confirm" name="confirm" type="password" autocomplete="new-password" minlength="6" required>
+      </div>
+      <button class="submit" type="submit">Create account</button>
+    </form>
+  </div>
+</main>
+
+<script>
+  const tabs = {
+    login:    { tab: document.getElementById('tab-login'),    form: document.getElementById('login-form'),
+                title: 'Welcome back', sub: 'Log in to open your wardrobe.' },
+    register: { tab: document.getElementById('tab-register'), form: document.getElementById('register-form'),
+                title: 'Start your wardrobe', sub: 'Create an account to save your clothes and outfits.' }
+  };
+  function show(mode) {
+    for (const [key, t] of Object.entries(tabs)) {
+      const active = key === mode;
+      t.tab.setAttribute('aria-selected', active);
+      t.form.hidden = !active;
+    }
+    document.getElementById('title').textContent = tabs[mode].title;
+    document.getElementById('subtitle').textContent = tabs[mode].sub;
+  }
+  tabs.login.tab.addEventListener('click', () => show('login'));
+  tabs.register.tab.addEventListener('click', () => show('register'));
+  show('{{ mode }}');
+</script>
+</body>
+</html>

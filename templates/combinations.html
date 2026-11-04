@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colour-Fit · Outfit combinations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF7;
+    --ink: #1B2440;
+    --muted: #5B6478;
+    --line: #D9DCE3;
+    --navy: #1B2440;
+    --mustard: #D9A21B;
+    --teal: #1F7A74;
+    --great: #1F7A4D;
+    --good: #1F7A74;
+    --okay: #B07A00;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+
+  header {
+    background: var(--navy); color: #fff; padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .brand { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 1.35rem; margin: 0; }
+  .brand span { color: var(--mustard); }
+  nav { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  nav a { color: #C7CCDA; text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
+  nav a:hover { color: #fff; }
+  nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--mustard); }
+  nav .user { color: #C7CCDA; font-size: .92rem; }
+  a:focus-visible, button:focus-visible, select:focus-visible {
+    outline: 3px solid var(--teal); outline-offset: 3px;
+  }
+
+  main { max-width: 1040px; margin: 0 auto; padding: 36px 24px 64px; }
+  h1 { font-family: "Bricolage Grotesque", sans-serif; font-size: 2rem; margin: 0 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 24px; max-width: 60ch; line-height: 1.5; }
+
+  /* ---------- Try-on stage ---------- */
+  .stage {
+    display: grid; grid-template-columns: 270px 1fr; gap: 30px; align-items: start;
+    background: #fff; border: 1.5px solid var(--line); border-radius: 8px;
+    padding: 24px 28px; margin-bottom: 28px;
+  }
+  .stage-fig {
+    background: linear-gradient(180deg, #F1F3F7 0%, #E4E8EF 100%);
+    border-radius: 8px; height: 440px;
+    display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+    position: sticky; top: 16px;
+  }
+  .stage-fig svg { height: 100%; width: auto; }
+  .av { display: block; }
+  .stage h2 { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.4rem; margin: 0 0 2px; }
+  .big-score { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 2.1rem; margin: 0; }
+  .why { color: var(--muted); margin: 2px 0 14px; line-height: 1.5; max-width: 52ch; }
+  .chips { display: flex; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; font-size: .92rem; font-weight: 500; }
+  .chip i { width: 20px; height: 20px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.22); }
+
+  .ctl { border: 0; padding: 0; margin: 0 0 18px; min-width: 0; }
+  .ctl legend { font-weight: 500; font-size: .92rem; padding: 0; margin-bottom: 8px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .opt .pill {
+    display: inline-block; padding: 7px 14px; border: 1.5px solid var(--line); border-radius: 999px;
+    cursor: pointer; font-weight: 500; font-size: .9rem; background: #fff;
+  }
+  .opt input:checked + .pill { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .opt input:focus-visible + .pill, .opt input:focus-visible + .dot { outline: 3px solid var(--teal); outline-offset: 3px; }
+
+  .skins { display: flex; gap: 14px; }
+  .skins .opt { text-align: center; cursor: pointer; }
+  .skins .dot { width: 34px; height: 34px; margin: 0 auto 4px; }
+  .skins small { font-size: .75rem; color: var(--muted); }
+  .dot { display: block; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.22); cursor: pointer; }
+  .opt input:checked + .dot { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--navy); }
+  .skins .opt:has(input:checked) small { color: var(--ink); font-weight: 500; }
+
+  .sgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(28px, 1fr)); gap: 10px; max-width: 420px; }
+  .sgrid .dot { width: 100%; aspect-ratio: 1; }
+
+  .myshoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .myshoes button {
+    display: inline-flex; align-items: center; gap: 8px; font: 500 .85rem "DM Sans", sans-serif;
+    border: 1.5px solid var(--line); background: #fff; border-radius: 8px; padding: 5px 10px 5px 5px; cursor: pointer; color: var(--ink);
+  }
+  .myshoes button:hover { border-color: var(--navy); }
+  .myshoes .th { width: 30px; height: 30px; border-radius: 5px; background: var(--c); overflow: hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+  .myshoes .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 8px 0 0; line-height: 1.4; }
+  .hint[hidden] { display: none; }
+  .label-sm { font-size: .8rem; color: var(--muted); margin: 12px 0 0; }
+
+  /* ---------- Filter + grid ---------- */
+  .filter { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+  .filter label { font-weight: 500; }
+  select { font: inherit; padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 6px; background: #fff; color: var(--ink); }
+  .count { color: var(--muted); margin-left: auto; }
+
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .outfit { background: #fff; border: 1.5px solid var(--line); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+  .pieces { display: grid; grid-template-columns: 1.1fr 1fr 1fr; grid-template-rows: 200px; height: 200px; overflow: hidden; }
+  .pieces > * { min-height: 0; min-width: 0; overflow: hidden; }
+  .pieces > * + * { border-left: 2px solid #fff; }
+  .mini { background: linear-gradient(180deg, #F1F3F7, #E4E8EF); display: flex; align-items: flex-end; justify-content: center; }
+  .mini svg { height: 100%; width: auto; }
+  figure { margin: 0; }
+  .piece { position: relative; background: var(--sw); }
+  .piece img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .piece figcaption {
+    position: absolute; left: 6px; bottom: 6px; font-size: .72rem; font-weight: 500;
+    padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,.93); color: var(--ink);
+  }
+
+  .info { padding: 14px 16px 18px; }
+  .headline { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .names { font-weight: 500; }
+  .score { font-weight: 700; font-family: "Bricolage Grotesque", sans-serif; color: var(--tone); }
+  .bar { height: 6px; background: var(--line); border-radius: 3px; margin: 10px 0; overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 3px; background: var(--tone); }
+  .reason { margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.45; }
+  .tone-great { --tone: var(--great); }
+  .tone-good { --tone: var(--good); }
+  .tone-okay { --tone: var(--okay); }
+  .tryon {
+    margin-top: 12px; font: 500 .9rem "DM Sans", sans-serif; color: var(--navy);
+    background: none; border: 1.5px solid var(--navy); border-radius: 6px; padding: 7px 14px; cursor: pointer;
+  }
+  .tryon:hover { background: var(--navy); color: #fff; }
+  .outfit.selected { border-color: var(--navy); box-shadow: 0 0 0 2px var(--navy); }
+  .outfit.selected .tryon { background: var(--navy); color: #fff; }
+
+  .empty { border: 2px dashed var(--line); border-radius: 8px; padding: 40px 24px; text-align: center; color: var(--muted); }
+  .empty strong { display: block; color: var(--ink); font-size: 1.15rem; margin-bottom: 6px; }
+  .empty a { display: inline-block; margin-top: 14px; background: var(--navy); color: #fff; padding: 11px 20px; border-radius: 6px; text-decoration: none; font-weight: 500; }
+  [hidden] { display: none !important; }
+
+  @media (max-width: 760px) {
+    header { padding: 14px 18px; }
+    main { padding: 28px 16px 48px; }
+    .count { margin-left: 0; width: 100%; }
+    .stage { grid-template-columns: 1fr; padding: 18px; }
+    .stage-fig { position: static; width: 230px; height: 400px; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+
+{# Colour name -> hex, used for the shirt and trouser colours #}
+{% set hex = {
+  'black':'#1E1E1E','white':'#FFFFFF','grey':'#9AA1AE','charcoal':'#3A3D44',
+  'beige':'#E9DFC9','cream':'#F4EBD0','navy':'#1B2440','denim':'#3F5F8A',
+  'blue':'#2F6FD0','red':'#C62828','maroon':'#7A1F2B','burgundy':'#6D1A36',
+  'orange':'#E8741C','mustard':'#D9A21B','yellow':'#F2D230','olive':'#6B7A3A',
+  'green':'#2E8B4F','teal':'#1F7A74','purple':'#6F3FA0','pink':'#E58AB0'
+} %}
+
+<header>
+  <p class="brand">Colour<span>-</span>Fit</p>
+  <nav aria-label="Main">
+    <a href="{{ url_for('wardrobe') }}">My wardrobe</a>
+    <a href="{{ url_for('combinations') }}" aria-current="page">Outfit combinations</a>
+    <span class="user">{{ session.get('username') }}</span>
+    <a href="{{ url_for('logout') }}">Log out</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Outfit combinations</h1>
+  <p class="sub">Every shirt and trouser pair from your wardrobe, ranked by how well their colours work together. Try any outfit on the avatar.</p>
+
+  {% if outfits %}
+    <section class="stage" aria-label="Try-on preview">
+      <div class="stage-fig">
+        <svg id="stage-av" class="av" viewBox="0 0 200 428" role="img" aria-label="Avatar wearing the selected outfit"></svg>
+      </div>
+
+      <div>
+        <h2 id="st-title">Try it on</h2>
+        <p class="big-score" id="st-score" aria-live="polite"></p>
+        <p class="why" id="st-why"></p>
+        <div class="chips">
+          <span class="chip"><i id="st-shirt"></i><span id="st-shirt-n"></span></span>
+          <span class="chip"><i id="st-trouser"></i><span id="st-trouser-n"></span></span>
+        </div>
+
+        <fieldset class="ctl">
+          <legend>Clothes</legend>
+          <div class="row">
+            <label class="opt"><input type="radio" name="mode" value="photo"><span class="pill">My photos</span></label>
+            <label class="opt"><input type="radio" name="mode" value="colour"><span class="pill">Plain colours</span></label>
+          </div>
+          <p class="hint" id="photo-hint" hidden>This outfit has no photos yet, so it shows plain colours. Add photos in My wardrobe.</p>
+        </fieldset>
+
+        <fieldset class="ctl">
+          <legend>Skin tone</legend>
+          <div class="skins">
+            {% for name, code in [('Light','#F3D2B3'),('Medium','#D9A67A'),('Tan','#A9724A'),('Deep','#6B4429')] %}
+              <label class="opt"><input type="radio" name="skin" value="{{ code }}">
+                <span class="dot" style="--c: {{ code }}"></span><small>{{ name }}</small></label>
+            {% endfor %}
+          </div>
+        </fieldset>
+
+        <fieldset class="ctl">
+          <legend>Shoe style</legend>
+          <div class="row">
+            <label class="opt"><input type="radio" name="shoestyle" value="sneaker"><span class="pill">Sneakers</span></label>
+            <label class="opt"><input type="radio" name="shoestyle" value="formal"><span class="pill">Formal</span></label>
+            <label class="opt"><input type="radio" name="shoestyle" value="boot"><span class="pill">Boots</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="ctl">
+          <legend>Shoe colour</legend>
+          <div class="sgrid">
+            {% for name, code in colours.items() %}
+              <label class="opt"><input type="radio" name="shoecol" value="{{ code }}">
+                <span class="dot" style="--c: {{ code }}" title="{{ name|title }}"></span></label>
+            {% endfor %}
+          </div>
+          {% if shoes %}
+            <p class="label-sm">Or wear shoes from your wardrobe:</p>
+            <div class="myshoes">
+              {% for shoe in shoes %}
+                <button type="button" data-colour="{{ colours.get(shoe.colour, '#1E1E1E') }}"
+                        data-style="{{ 'formal' if shoe.style == 'Formal' else 'sneaker' }}">
+                  <span class="th" style="--c: {{ colours.get(shoe.colour, '#DDDDDD') }}">
+                    {% if shoe.image %}<img src="{{ url_for('static', filename='uploads/' ~ shoe.image) }}" alt="">{% endif %}
+                  </span>
+                  {{ shoe.colour|title }} · {{ shoe.style }}
+                </button>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="hint">Add shoes in My wardrobe to wear your own pairs here.</p>
+          {% endif %}
+        </fieldset>
+      </div>
+    </section>
+
+    <div class="filter">
+      <label for="min">Show matches that score at least</label>
+      <select id="min">
+        <option value="0">Any (60+)</option>
+        <option value="75">Good (75+)</option>
+        <option value="90">Great (90+)</option>
+      </select>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+
+    <ul class="grid" id="grid">
+      {% for o in outfits %}
+        {% set tone = 'great' if o.score >= 90 else ('good' if o.score >= 75 else 'okay') %}
+        {% set sh = hex.get(o.shirt.colour|lower, '#DDDDDD') %}
+        {% set tr = hex.get(o.trouser.colour|lower, '#DDDDDD') %}
+        <li class="outfit tone-{{ tone }}" data-score="{{ o.score }}"
+            data-shirt="{{ sh }}" data-trouser="{{ tr }}"
+            data-shirt-img="{% if o.shirt.image %}{{ url_for('static', filename='uploads/' ~ o.shirt.image) }}{% endif %}"
+            data-trouser-img="{% if o.trouser.image %}{{ url_for('static', filename='uploads/' ~ o.trouser.image) }}{% endif %}"
+            data-shirt-name="{{ o.shirt.colour|title }} shirt"
+            data-trouser-name="{{ o.trouser.colour|title }} trousers"
+            data-reason="{{ o.reason }}">
+          <div class="pieces">
+            <div class="mini"><svg class="av" viewBox="0 0 200 428" aria-hidden="true"></svg></div>
+            <figure class="piece" style="--sw: {{ sh }}">
+              {% if o.shirt.image %}
+                <img src="{{ url_for('static', filename='uploads/' ~ o.shirt.image) }}" alt="{{ o.shirt.colour|title }} shirt" loading="lazy">
+              {% endif %}
+              <figcaption>{{ o.shirt.colour|title }} shirt</figcaption>
+            </figure>
+            <figure class="piece" style="--sw: {{ tr }}">
+              {% if o.trouser.image %}
+                <img src="{{ url_for('static', filename='uploads/' ~ o.trouser.image) }}" alt="{{ o.trouser.colour|title }} trousers" loading="lazy">
+              {% endif %}
+              <figcaption>{{ o.trouser.colour|title }} trousers</figcaption>
+            </figure>
+          </div>
+          <div class="info">
+            <div class="headline">
+              <span class="names">{{ o.shirt.colour|title }} + {{ o.trouser.colour|lower }}</span>
+              <span class="score">{{ o.score }}/100</span>
+            </div>
+            <div class="bar" role="img" aria-label="Match score {{ o.score }} out of 100"><i style="width: {{ o.score }}%"></i></div>
+            <p class="reason">{{ o.reason }}</p>
+            <button type="button" class="tryon">Try on avatar</button>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="empty" id="none" hidden>
+      <strong>No matches at this level</strong>
+      Lower the minimum score to see more outfits.
+    </div>
+  {% else %}
+    <div class="empty">
+      <strong>No outfits to match yet</strong>
+      Add at least one shirt and one pair of trousers to your wardrobe.
+      <br><a href="{{ url_for('wardrobe') }}">Go to my wardrobe</a>
+    </div>
+  {% endif %}
+</main>
+
+{% if outfits %}
+<script>
+/* ===================== Avatar drawing ===================== */
+const AV = (() => {
+  let counter = 0;
+
+  const SHIRT = "M54 96 L28 116 Q20 146 22 172 L48 178 L54 152 L58 226 Q100 232 142 226 L146 152 L152 178 L178 172 Q180 146 172 116 L146 96 Q124 90 112 90 L100 110 L88 90 Q76 90 54 96 Z";
+  const TROUSERS = "M56 228 L144 228 L134 392 L101 392 L100 296 L99 392 L66 392 Z";
+  const ARM_L = "M24 172 L48 178 L45 226 Q44 242 35 242 Q25 242 25 226 Z";
+  const ARM_R = "M176 172 L152 178 L155 226 Q156 242 165 242 Q175 242 175 226 Z";
+  const LINE = 'stroke="rgba(0,0,0,.28)" stroke-width="1.4" stroke-linejoin="round"';
+
+  function shade(hex, f) {
+    const h = hex.replace('#', '');
+    let r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+    const t = f < 0 ? 0 : 255, k = Math.abs(f);
+    r = Math.round(r + (t - r) * k); g = Math.round(g + (t - g) * k); b = Math.round(b + (t - b) * k);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  // A garment: flat colour, optional photo clipped to the shape, then shading
+  function garment(id, d, box, colour, img, grad) {
+    const photo = img
+      ? `<image href="${img}" x="${box[0]}" y="${box[1]}" width="${box[2]}" height="${box[3]}" preserveAspectRatio="xMidYMid slice"/>`
+      : '';
+    return `<clipPath id="${id}"><path d="${d}"/></clipPath>
+      <g clip-path="url(#${id})"><rect width="200" height="428" fill="${colour}"/>${photo}</g>
+      <path d="${d}" fill="url(#${grad})"/>
+      <path d="${d}" fill="none" ${LINE}/>`;
+  }
+
+  function shoeLeft(style, c) {
+    const edge = 'stroke="rgba(0,0,0,.35)" stroke-width="1.2" stroke-linejoin="round"';
+    if (style === 'formal') {
+      return `<path d="M62 386 L98 386 L99 406 Q80 410 52 408 Q46 406 50 400 Q60 398 62 386 Z" fill="${c}" ${edge}/>
+        <path d="M54 403 Q66 401 76 405" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M48 406 Q70 412 99 408 L99 413 Q70 418 48 411 Z" fill="#241A14" ${edge}/>`;
+    }
+    if (style === 'boot') {
+      return `<path d="M63 364 L98 364 L99 406 Q80 411 52 409 Q46 407 50 400 Q62 396 63 364 Z" fill="${c}" ${edge}/>
+        <path d="M63 364 L98 364 L98 374 L63 374 Z" fill="rgba(255,255,255,.2)" ${edge}/>
+        <path d="M66 382 L92 384 M66 389 L92 391 M65 396 L92 398" stroke="rgba(255,255,255,.55)" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M48 406 Q70 412 99 408 L99 414 Q70 419 47 412 Z" fill="#241A14" ${edge}/>`;
+    }
+    return `<path d="M60 384 L98 384 L99 407 Q86 412 58 411 Q47 410 50 402 Q57 396 60 384 Z" fill="${c}" ${edge}/>
+      <path d="M50 402 Q47 410 58 411 Q72 412 80 408 Q70 398 56 398 Z" fill="rgba(255,255,255,.22)"/>
+      <path d="M64 390 L90 392 M63 395 L89 397" stroke="rgba(255,255,255,.75)" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M49 407 Q58 415 99 412 L99 418 Q58 422 48 412 Z" fill="#F4F4F4" ${edge}/>`;
+  }
+
+  function render(svg, o) {
+    const p = 'a' + (++counter);
+    const skin = o.skin, skinDark = shade(skin, -0.16);
+    const usePhotos = o.photos;
+    const sImg = usePhotos ? o.shirt.img : '';
+    const tImg = usePhotos ? o.trouser.img : '';
+    const hair = '#2A2118';
+
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="${p}g" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#000" stop-opacity=".24"/>
+          <stop offset=".3" stop-color="#000" stop-opacity="0"/>
+          <stop offset=".7" stop-color="#000" stop-opacity="0"/>
+          <stop offset="1" stop-color="#000" stop-opacity=".24"/>
+        </linearGradient>
+      </defs>
+
+      <ellipse cx="100" cy="420" rx="56" ry="5" fill="rgba(0,0,0,.14)"/>
+
+      <!-- forearms, neck, chest -->
+      <path d="${ARM_L}" fill="${skin}" ${LINE}/>
+      <path d="${ARM_R}" fill="${skin}" ${LINE}/>
+      <path d="M91 70 L91 94 L109 94 L109 70 Z" fill="${skinDark}"/>
+      <path d="M86 88 L100 112 L114 88 Z" fill="${skin}"/>
+
+      <!-- trousers -->
+      ${garment(p + 't', TROUSERS, [56, 228, 88, 164], o.trouser.color, tImg, p + 'g')}
+      <path d="M79 244 L82 388 M121 244 L118 388" stroke="rgba(0,0,0,.14)" stroke-width="1.3" fill="none"/>
+      <path d="M62 236 Q70 250 68 262 M138 236 Q130 250 132 262" stroke="rgba(0,0,0,.14)" stroke-width="1.2" fill="none"/>
+
+      <!-- shirt -->
+      ${garment(p + 's', SHIRT, [20, 90, 160, 142], o.shirt.color, sImg, p + 'g')}
+      <path d="M100 110 L100 224" stroke="rgba(0,0,0,.2)" stroke-width="1.2" fill="none"/>
+      <g fill="rgba(0,0,0,.35)"><circle cx="100" cy="126" r="1.8"/><circle cx="100" cy="148" r="1.8"/><circle cx="100" cy="170" r="1.8"/><circle cx="100" cy="192" r="1.8"/><circle cx="100" cy="212" r="1.8"/></g>
+      <path d="M88 89 L100 111 L89 113 L77 95 Z M112 89 L100 111 L111 113 L123 95 Z" fill="rgba(255,255,255,.2)" ${LINE}/>
+      <path d="M22 172 L48 178 M178 172 L152 178" stroke="rgba(0,0,0,.25)" stroke-width="1.3"/>
+      <path d="M56 160 Q58 195 58 224 M144 160 Q142 195 142 224" stroke="rgba(0,0,0,.1)" stroke-width="1.2" fill="none"/>
+
+      <!-- belt -->
+      <rect x="55" y="223" width="90" height="10" rx="2" fill="#3A2B20" ${LINE}/>
+      <rect x="94" y="222" width="12" height="12" rx="2" fill="none" stroke="#C9A24A" stroke-width="2"/>
+
+      <!-- head -->
+      <circle cx="73" cy="52" r="5" fill="${skin}" ${LINE}/>
+      <circle cx="127" cy="52" r="5" fill="${skin}" ${LINE}/>
+      <ellipse cx="100" cy="50" rx="26" ry="29" fill="${skin}" ${LINE}/>
+      <path d="M73 46 Q69 12 100 11 Q133 12 127 46 Q124 30 112 26 Q96 33 84 28 Q76 34 73 46 Z" fill="${hair}"/>
+      <path d="M85 44 Q90 41 95 44 M105 44 Q110 41 115 44" stroke="${hair}" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="90" cy="51" rx="2.3" ry="2.9" fill="#2A2118"/>
+      <ellipse cx="110" cy="51" rx="2.3" ry="2.9" fill="#2A2118"/>
+      <path d="M100 53 Q97 60 101 61" stroke="${skinDark}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <path d="M92 66 Q100 72 108 66" stroke="#7A3B2E" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <!-- shoes -->
+      ${shoeLeft(o.shoe.style, o.shoe.color)}
+      <g transform="translate(200 0) scale(-1 1)">${shoeLeft(o.shoe.style, o.shoe.color)}</g>
+    `;
+  }
+
+  return { render };
+})();
+
+/* ===================== Page logic ===================== */
+const $ = id => document.getElementById(id);
+const select = $('min');
+const cards = [...document.querySelectorAll('.outfit')];
+const count = $('count');
+const none = $('none');
+const stageAv = $('stage-av');
+let selected = null;
+
+const state = { photos: true, skin: '#D9A67A', shoeStyle: 'sneaker', shoeColour: '#1E1E1E' };
+try {
+  const saved = JSON.parse(localStorage.getItem('cf-avatar') || '{}');
+  Object.assign(state, saved);
+} catch (e) {}
+
+function save() { try { localStorage.setItem('cf-avatar', JSON.stringify(state)); } catch (e) {} }
+
+function opts(card) {
+  const d = card.dataset;
+  return {
+    skin: state.skin, photos: state.photos,
+    shirt: { color: d.shirt, img: d.shirtImg },
+    trouser: { color: d.trouser, img: d.trouserImg },
+    shoe: { style: state.shoeStyle, color: state.shoeColour }
+  };
+}
+
+function paintAll() {
+  if (selected) {
+    AV.render(stageAv, opts(selected));
+    const hasPhoto = selected.dataset.shirtImg || selected.dataset.trouserImg;
+    $('photo-hint').hidden = !(state.photos && !hasPhoto);
+  }
+  cards.forEach(c => AV.render(c.querySelector('.mini svg'), opts(c)));
+}
+
+function syncControls() {
+  const set = (name, value) => {
+    const r = [...document.querySelectorAll('input[name="' + name + '"]')].find(x => x.value.toLowerCase() === String(value).toLowerCase());
+    if (r) r.checked = true;
+  };
+  set('mode', state.photos ? 'photo' : 'colour');
+  set('skin', state.skin);
+  set('shoestyle', state.shoeStyle);
+  set('shoecol', state.shoeColour);
+}
+
+function choose(card) {
+  if (!card) return;
+  if (selected) selected.classList.remove('selected');
+  selected = card;
+  card.classList.add('selected');
+  const d = card.dataset, score = Number(d.score);
+  $('st-title').textContent = d.shirtName + ' + ' + d.trouserName.toLowerCase();
+  $('st-score').textContent = score + '/100';
+  $('st-score').style.color = score >= 90 ? '#1F7A4D' : score >= 75 ? '#1F7A74' : '#B07A00';
+  $('st-why').textContent = d.reason;
+  $('st-shirt').style.setProperty('--c', d.shirt);
+  $('st-trouser').style.setProperty('--c', d.trouser);
+  $('st-shirt-n').textContent = d.shirtName;
+  $('st-trouser-n').textContent = d.trouserName;
+  paintAll();
+}
+
+function apply() {
+  const min = Number(select.value);
+  let shown = 0;
+  cards.forEach(c => {
+    const ok = Number(c.dataset.score) >= min;
+    c.hidden = !ok;
+    if (ok) shown++;
+  });
+  count.textContent = shown + (shown === 1 ? ' outfit' : ' outfits');
+  none.hidden = shown !== 0;
+  if (!selected || selected.hidden) choose(cards.find(c => !c.hidden));
+}
+
+// Controls
+document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', () => { state.photos = r.value === 'photo'; save(); paintAll(); }));
+document.querySelectorAll('input[name="skin"]').forEach(r => r.addEventListener('change', () => { state.skin = r.value; save(); paintAll(); }));
+document.querySelectorAll('input[name="shoestyle"]').forEach(r => r.addEventListener('change', () => { state.shoeStyle = r.value; save(); paintAll(); }));
+document.querySelectorAll('input[name="shoecol"]').forEach(r => r.addEventListener('change', () => { state.shoeColour = r.value; save(); paintAll(); }));
+document.querySelectorAll('.myshoes button').forEach(b => b.addEventListener('click', () => {
+  state.shoeColour = b.dataset.colour; state.shoeStyle = b.dataset.style;
+  save(); syncControls(); paintAll();
+}));
+cards.forEach(c => c.querySelector('.tryon').addEventListener('click', () => {
+  choose(c);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}));
+select.addEventListener('change', apply);
+
+syncControls();
+apply();
+</script>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colour-Fit · My wardrobe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF7;
+    --ink: #1B2440;
+    --muted: #5B6478;
+    --line: #D9DCE3;
+    --navy: #1B2440;
+    --mustard: #D9A21B;
+    --teal: #1F7A74;
+    --error: #B3261E;
+    --success: #1F7A4D;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+
+  header {
+    background: var(--navy); color: #fff; padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .brand { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 1.35rem; margin: 0; }
+  .brand span { color: var(--mustard); }
+  nav { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  nav a { color: #C7CCDA; text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
+  nav a:hover { color: #fff; }
+  nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--mustard); }
+  nav .user { color: #C7CCDA; font-size: .92rem; }
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible + .sw, input:focus-visible {
+    outline: 3px solid var(--teal); outline-offset: 2px;
+  }
+
+  main {
+    max-width: 1120px; margin: 0 auto; padding: 36px 24px 64px;
+    display: grid; grid-template-columns: 330px 1fr; gap: 36px; align-items: start;
+  }
+  h1, h2 { font-family: "Bricolage Grotesque", sans-serif; margin: 0; }
+  h1 { font-size: 2rem; margin-bottom: 6px; }
+  h2 { font-size: 1.3rem; margin-bottom: 16px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+
+  .msg { padding: 11px 14px; border-radius: 6px; margin-bottom: 18px; font-size: .95rem; border-left: 4px solid; }
+  .msg.error { background: #FCEDEC; color: var(--error); border-color: var(--error); }
+  .msg.success { background: #E8F5EE; color: var(--success); border-color: var(--success); }
+  .flash { grid-column: 1 / -1; margin: 0; }
+  .flash .msg:last-child { margin-bottom: 0; }
+
+  /* Add form */
+  .add {
+    background: #fff; border: 1.5px solid var(--line); border-radius: 8px;
+    padding: 22px; position: sticky; top: 20px;
+  }
+  .field { margin-bottom: 16px; border: 0; padding: 0; min-width: 0; }
+  label, legend { display: block; font-weight: 500; margin: 0 0 6px; padding: 0; }
+  select, input[type="file"] {
+    width: 100%; font: inherit; color: var(--ink);
+    padding: 10px 12px; background: #fff;
+    border: 1.5px solid var(--line); border-radius: 6px;
+  }
+  .hint { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
+
+  .choices { display: flex; gap: 8px; flex-wrap: wrap; }
+  .choices label { margin: 0; }
+  .choices input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .pill {
+    display: inline-block; padding: 8px 14px; border: 1.5px solid var(--line);
+    border-radius: 999px; cursor: pointer; font-weight: 500; font-size: .95rem; background: #fff;
+  }
+  .choices input:checked + .pill { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .choices input:focus-visible + .pill { outline: 3px solid var(--teal); outline-offset: 2px; }
+
+  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .swatches label { margin: 0; text-align: center; font-weight: 400; font-size: .72rem; color: var(--muted); cursor: pointer; }
+  .swatches input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .sw {
+    display: block; width: 100%; aspect-ratio: 1; border-radius: 50%;
+    background: var(--c); box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.18); margin-bottom: 4px;
+  }
+  .swatches input:checked + .sw { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--navy); }
+  .swatches input:focus-visible + .sw { outline: 3px solid var(--teal); outline-offset: 4px; }
+  .swatches input:checked ~ span { color: var(--ink); font-weight: 500; }
+
+  .preview { display: none; width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; margin-top: 10px; }
+  .submit {
+    width: 100%; padding: 13px; font: 500 1rem "DM Sans", sans-serif;
+    color: #fff; background: var(--navy); border: 0; border-radius: 6px; cursor: pointer;
+  }
+  .submit:hover { background: #26325A; }
+
+  /* Wardrobe grid */
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tabs button {
+    font: 500 .95rem "DM Sans", sans-serif; padding: 8px 16px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: #fff; color: var(--ink); cursor: pointer;
+  }
+  .tabs button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+  .item { background: #fff; border: 1.5px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .photo { height: 190px; background: var(--c); position: relative; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dot {
+    position: absolute; right: 10px; bottom: 10px; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--c); box-shadow: 0 0 0 2px #fff, inset 0 0 0 1px rgba(0,0,0,.2);
+  }
+  .meta { padding: 12px 14px 14px; }
+  .name { font-weight: 500; margin: 0; }
+  .detail { color: var(--muted); font-size: .9rem; margin: 2px 0 10px; }
+  .remove {
+    font: 500 .88rem "DM Sans", sans-serif; background: none; border: 0; padding: 0;
+    color: var(--error); cursor: pointer; text-decoration: underline;
+  }
+
+  .empty { border: 2px dashed var(--line); border-radius: 8px; padding: 40px 24px; text-align: center; color: var(--muted); }
+  .empty strong { display: block; color: var(--ink); font-size: 1.15rem; margin-bottom: 6px; }
+  [hidden] { display: none !important; }
+
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; padding: 28px 16px 48px; }
+    .add { position: static; }
+    header { padding: 14px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="brand">Colour<span>-</span>Fit</p>
+  <nav aria-label="Main">
+    <a href="{{ url_for('wardrobe') }}" aria-current="page">My wardrobe</a>
+    <a href="{{ url_for('combinations') }}">Outfit combinations</a>
+    <span class="user">{{ session.get('username') }}</span>
+    <a href="{{ url_for('logout') }}">Log out</a>
+  </nav>
+</header>
+
+<main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash">
+        {% for category, message in messages %}
+          <div class="msg {{ category }}" role="alert">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Add item -->
+  <section class="add" aria-labelledby="add-title">
+    <h2 id="add-title">Add a clothing item</h2>
+    <form method="post" action="{{ url_for('add_item') }}" enctype="multipart/form-data">
+
+      <fieldset class="field">
+        <legend>Category</legend>
+        <div class="choices">
+          {% for key, label in categories.items() %}
+            <label>
+              <input type="radio" name="category" value="{{ key }}" required {% if loop.first %}checked{% endif %}>
+              <span class="pill">{{ label }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Colour</legend>
+        <div class="swatches">
+          {% for name, code in colours.items() %}
+            <label>
+              <input type="radio" name="colour" value="{{ name }}" required>
+              <i class="sw" style="--c: {{ code }}"></i>
+              <span>{{ name|title }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="style">Style</label>
+        <select id="style" name="style" required>
+          {% for s in styles %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="photo">Photo (optional)</label>
+        <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp">
+        <p class="hint">JPG, PNG or WebP, up to 5 MB.</p>
+        <img id="preview" class="preview" alt="Preview of the selected photo">
+      </div>
+
+      <button class="submit" type="submit">Add to wardrobe</button>
+    </form>
+  </section>
+
+  <!-- Wardrobe -->
+  <section aria-labelledby="wardrobe-title">
+    <h1 id="wardrobe-title">My wardrobe</h1>
+    <p class="sub">{{ items|length }} {{ 'item' if items|length == 1 else 'items' }} saved. Add shirts and trousers to get outfit combinations.</p>
+
+    {% if items %}
+      <div class="tabs" role="group" aria-label="Filter by category">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        {% for key, label in categories.items() %}
+          <button type="button" data-filter="{{ key }}" aria-pressed="false">{{ label }}</button>
+        {% endfor %}
+      </div>
+
+      <ul class="grid" id="grid">
+        {% for it in items %}
+          <li class="item" data-category="{{ it.category }}">
+            <div class="photo" style="--c: {{ colours.get(it.colour, '#DDD') }}">
+              {% if it.image %}
+                <img src="{{ url_for('static', filename='uploads/' ~ it.image) }}"
+                     alt="{{ it.colour|title }} {{ it.category }}" loading="lazy">
+              {% endif %}
+              <span class="dot" title="{{ it.colour|title }}"></span>
+            </div>
+            <div class="meta">
+              <p class="name">{{ it.colour|title }} {{ it.category }}</p>
+              <p class="detail">{{ it.style }}</p>
+              <form method="post" action="{{ url_for('delete_item', item_id=it.id) }}"
+                    onsubmit="return confirm('Remove this item from your wardrobe?');">
+                <button class="remove" type="submit">Remove</button>
+              </form>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="empty" id="none" hidden>
+        <strong>Nothing in this category yet</strong>
+        Use the form to add one.
+      </div>
+    {% else %}
+      <div class="empty">
+        <strong>Your wardrobe is empty</strong>
+        Add your first item using the form. Start with a shirt and a pair of trousers.
+      </div>
+    {% endif %}
+  </section>
+</main>
+
+<script>
+  // Photo preview
+  const photo = document.getElementById('photo');
+  const preview = document.getElementById('preview');
+  photo.addEventListener('change', () => {
+    const f = photo.files[0];
+    if (f) { preview.src = URL.createObjectURL(f); preview.style.display = 'block'; }
+    else { preview.style.display = 'none'; }
+  });
+
+  // Category filter
+  const tabs = document.querySelectorAll('.tabs button');
+  const cards = document.querySelectorAll('.item');
+  const none = document.getElementById('none');
+  tabs.forEach(btn => btn.addEventListener('click', () => {
+    const f = btn.dataset.filter;
+    tabs.forEach(b => b.setAttribute('aria-pressed', b === btn));
+    let shown = 0;
+    cards.forEach(c => {
+      const ok = f === 'all' || c.dataset.category === f;
+      c.hidden = !ok;
+      if (ok) shown++;
+    });
+    if (none) none.hidden = shown !== 0;
+  }));
+</script>
+</body>
+</html>
