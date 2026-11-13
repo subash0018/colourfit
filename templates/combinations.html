@@ -1,3 +1,4 @@
+{% from "_icons.html" import icon %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,10 +7,11 @@
 <title>Colour-Fit · Outfit combinations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
 <style>
   :root {
-    --paper: #FAFAF7;
+    --paper: #F6F7F9;
     --ink: #1B2440;
     --muted: #5B6478;
     --line: #D9DCE3;
@@ -21,43 +23,28 @@
     --okay: #B07A00;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+  body { margin: 0; font-family: "Inter", system-ui, sans-serif; color: var(--ink); background: var(--paper); }
 
-  header {
-    background: var(--navy); color: #fff; padding: 14px 32px;
-    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-  }
-  .brand { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 1.35rem; margin: 0; }
-  .brand span { color: var(--mustard); }
-  nav { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
-  nav a { color: #C7CCDA; text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
-  nav a:hover { color: #fff; }
-  nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--mustard); }
-  nav .user { color: #C7CCDA; font-size: .92rem; }
-  a:focus-visible, button:focus-visible, select:focus-visible {
-    outline: 3px solid var(--teal); outline-offset: 3px;
-  }
-
-  main { max-width: 1040px; margin: 0 auto; padding: 36px 24px 64px; }
-  h1 { font-family: "Bricolage Grotesque", sans-serif; font-size: 2rem; margin: 0 0 6px; }
-  .sub { color: var(--muted); margin: 0 0 24px; max-width: 60ch; line-height: 1.5; }
+  main { max-width: 1280px; margin: 0 auto; padding: 20px 24px 32px; }
+  h1 { font-size: 1.35rem; margin: 0 0 2px; }
+  .sub { color: var(--muted); margin: 0 0 14px; max-width: 70ch; font-size: .9rem; }
 
   /* ---------- Try-on stage ---------- */
   .stage {
-    display: grid; grid-template-columns: 270px 1fr; gap: 30px; align-items: start;
+    display: grid; grid-template-columns: 250px 1fr; gap: 24px; align-items: start;
     background: #fff; border: 1.5px solid var(--line); border-radius: 8px;
-    padding: 24px 28px; margin-bottom: 28px;
+    padding: 18px 22px; margin-bottom: 16px;
   }
   .stage-fig {
     background: linear-gradient(180deg, #F1F3F7 0%, #E4E8EF 100%);
-    border-radius: 8px; height: 440px;
+    border-radius: 8px; height: 420px;
     display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
     position: sticky; top: 16px;
   }
   .stage-fig svg { height: 100%; width: auto; }
   .av { display: block; }
-  .stage h2 { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.4rem; margin: 0 0 2px; }
-  .big-score { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 2.1rem; margin: 0; }
+  .stage h2 { font-family: "Inter", sans-serif; font-size: 1.4rem; margin: 0 0 2px; }
+  .big-score { font-family: "Inter", sans-serif; font-weight: 700; font-size: 2.1rem; margin: 0; }
   .why { color: var(--muted); margin: 2px 0 14px; line-height: 1.5; max-width: 52ch; }
   .chips { display: flex; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
   .chip { display: inline-flex; align-items: center; gap: 8px; font-size: .92rem; font-weight: 500; }
@@ -87,7 +74,7 @@
 
   .myshoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
   .myshoes button {
-    display: inline-flex; align-items: center; gap: 8px; font: 500 .85rem "DM Sans", sans-serif;
+    display: inline-flex; align-items: center; gap: 8px; font: 500 .85rem "Inter", sans-serif;
     border: 1.5px solid var(--line); background: #fff; border-radius: 8px; padding: 5px 10px 5px 5px; cursor: pointer; color: var(--ink);
   }
   .myshoes button:hover { border-color: var(--navy); }
@@ -98,43 +85,44 @@
   .label-sm { font-size: .8rem; color: var(--muted); margin: 12px 0 0; }
 
   /* ---------- Filter + grid ---------- */
-  .filter { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+  .filter { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
   .filter label { font-weight: 500; }
   select { font: inherit; padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 6px; background: #fff; color: var(--ink); }
   .count { color: var(--muted); margin-left: auto; }
 
-  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-  .outfit { background: #fff; border: 1.5px solid var(--line); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
-  .pieces { display: grid; grid-template-columns: 1.1fr 1fr 1fr; grid-template-rows: 200px; height: 200px; overflow: hidden; }
-  .pieces > * { min-height: 0; min-width: 0; overflow: hidden; }
-  .pieces > * + * { border-left: 2px solid #fff; }
-  .mini { background: linear-gradient(180deg, #F1F3F7, #E4E8EF); display: flex; align-items: flex-end; justify-content: center; }
-  .mini svg { height: 100%; width: auto; }
-  figure { margin: 0; }
-  .piece { position: relative; background: var(--sw); }
-  .piece img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .piece figcaption {
-    position: absolute; left: 6px; bottom: 6px; font-size: .72rem; font-weight: 500;
-    padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,.93); color: var(--ink);
-  }
-
-  .info { padding: 14px 16px 18px; }
-  .headline { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-  .names { font-weight: 500; }
-  .score { font-weight: 700; font-family: "Bricolage Grotesque", sans-serif; color: var(--tone); }
-  .bar { height: 6px; background: var(--line); border-radius: 3px; margin: 10px 0; overflow: hidden; }
-  .bar i { display: block; height: 100%; border-radius: 3px; background: var(--tone); }
-  .reason { margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.45; }
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .outfit { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  .names { font-weight: 600; font-size: .92rem; }
+  .scorerow { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .score { font-weight: 700; font-size: 2rem; letter-spacing: -.02em; color: var(--tone); line-height: 1; }
+  .score small { font-size: .9rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  .verdict { font-size: .78rem; font-weight: 600; color: var(--tone); background: color-mix(in srgb, var(--tone) 11%, #fff); padding: 3px 10px; border-radius: 999px; }
+  .sum { margin: 0; color: var(--muted); font-size: .86rem; line-height: 1.5; }
+  .sum .ln { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .tone-great { --tone: var(--great); }
   .tone-good { --tone: var(--good); }
   .tone-okay { --tone: var(--okay); }
   .tryon {
-    margin-top: 12px; font: 500 .9rem "DM Sans", sans-serif; color: var(--navy);
-    background: none; border: 1.5px solid var(--navy); border-radius: 6px; padding: 7px 14px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px;
+    font: 500 .88rem "Inter", sans-serif; color: var(--navy); background: #fff;
+    border: 1px solid #C4C9D4; border-radius: 8px; cursor: pointer;
   }
-  .tryon:hover { background: var(--navy); color: #fff; }
-  .outfit.selected { border-color: var(--navy); box-shadow: 0 0 0 2px var(--navy); }
-  .outfit.selected .tryon { background: var(--navy); color: #fff; }
+  .tryon:hover { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+  /* Avatar pop-up */
+  .dlg { border: 0; border-radius: 14px; padding: 0; width: min(880px, 94vw); max-height: 92vh; overflow: auto; color: var(--ink); box-shadow: 0 24px 60px rgba(17,24,39,.35); }
+  .dlg::backdrop { background: rgba(17,24,39,.55); }
+  .dlg .stage { border: 0; margin: 0; border-radius: 0; }
+  .dlg .x {
+    position: absolute; top: 10px; right: 10px; z-index: 2; width: 36px; height: 36px; display: grid; place-items: center;
+    border: 0; border-radius: 8px; background: #F1F3F7; color: var(--ink); cursor: pointer;
+  }
+  .dlg .x:hover { background: #E5E7EB; }
+  .ask-link {
+    display: inline-flex; align-items: center; gap: 8px; margin: 0 0 16px; padding: 8px 14px; border-radius: 8px;
+    background: var(--tint); color: var(--navy); text-decoration: none; font-weight: 600; font-size: .86rem;
+  }
+  .ask-link:hover { background: #E2E7F3; }
 
   .empty { border: 2px dashed var(--line); border-radius: 8px; padding: 40px 24px; text-align: center; color: var(--muted); }
   .empty strong { display: block; color: var(--ink); font-size: 1.15rem; margin-bottom: 6px; }
@@ -145,8 +133,9 @@
     header { padding: 14px 18px; }
     main { padding: 28px 16px 48px; }
     .count { margin-left: 0; width: 100%; }
-    .stage { grid-template-columns: 1fr; padding: 18px; }
-    .stage-fig { position: static; width: 230px; height: 400px; margin: 0 auto; }
+    .stage { grid-template-columns: minmax(0, 1fr); padding: 52px 18px 18px; }
+    .stage > * { min-width: 0; }
+    .stage-fig { position: static; width: 230px; height: 380px; margin: 0 auto; justify-self: center; }
   }
 </style>
 </head>
@@ -161,22 +150,17 @@
   'green':'#2E8B4F','teal':'#1F7A74','purple':'#6F3FA0','pink':'#E58AB0'
 } %}
 
-<header>
-  <p class="brand">Colour<span>-</span>Fit</p>
-  <nav aria-label="Main">
-    <a href="{{ url_for('wardrobe') }}">My wardrobe</a>
-    <a href="{{ url_for('combinations') }}" aria-current="page">Outfit combinations</a>
-    <span class="user">{{ session.get('username') }}</span>
-    <a href="{{ url_for('logout') }}">Log out</a>
-  </nav>
-</header>
+{% set active = 'combinations' %}
+{% include "_header.html" %}
 
 <main>
   <h1>Outfit combinations</h1>
-  <p class="sub">Every shirt and trouser pair from your wardrobe, ranked by how well their colours work together. Try any outfit on the avatar.</p>
+  <p class="sub">Each outfit's score and a quick summary. Press View on avatar to see the full look.</p>
 
   {% if outfits %}
-    <section class="stage" aria-label="Try-on preview">
+    <dialog id="avatar-dialog" class="dlg" aria-labelledby="st-title">
+    <button type="button" class="x" id="dlg-close" aria-label="Close">{{ icon('x', 18) }}</button>
+    <section class="stage" aria-label="Avatar preview">
       <div class="stage-fig">
         <svg id="stage-av" class="av" viewBox="0 0 200 428" role="img" aria-label="Avatar wearing the selected outfit"></svg>
       </div>
@@ -189,6 +173,8 @@
           <span class="chip"><i id="st-shirt"></i><span id="st-shirt-n"></span></span>
           <span class="chip"><i id="st-trouser"></i><span id="st-trouser-n"></span></span>
         </div>
+
+        <a class="ask-link" id="ask-link" href="{{ url_for('assistant') }}">{{ icon('chat', 16) }}Ask the stylist about this outfit</a>
 
         <fieldset class="ctl">
           <legend>Clothes</legend>
@@ -245,6 +231,7 @@
         </fieldset>
       </div>
     </section>
+    </dialog>
 
     <div class="filter">
       <label for="min">Show matches that score at least</label>
@@ -267,31 +254,17 @@
             data-trouser-img="{% if o.trouser.image %}{{ url_for('static', filename='uploads/' ~ o.trouser.image) }}{% endif %}"
             data-shirt-name="{{ o.shirt.colour|title }} shirt"
             data-trouser-name="{{ o.trouser.colour|title }} trousers"
-            data-reason="{{ o.reason }}">
-          <div class="pieces">
-            <div class="mini"><svg class="av" viewBox="0 0 200 428" aria-hidden="true"></svg></div>
-            <figure class="piece" style="--sw: {{ sh }}">
-              {% if o.shirt.image %}
-                <img src="{{ url_for('static', filename='uploads/' ~ o.shirt.image) }}" alt="{{ o.shirt.colour|title }} shirt" loading="lazy">
-              {% endif %}
-              <figcaption>{{ o.shirt.colour|title }} shirt</figcaption>
-            </figure>
-            <figure class="piece" style="--sw: {{ tr }}">
-              {% if o.trouser.image %}
-                <img src="{{ url_for('static', filename='uploads/' ~ o.trouser.image) }}" alt="{{ o.trouser.colour|title }} trousers" loading="lazy">
-              {% endif %}
-              <figcaption>{{ o.trouser.colour|title }} trousers</figcaption>
-            </figure>
+            data-reason="{{ o.reason }}" data-tip="{{ o.tip }}">
+          <div class="names">{{ o.shirt.colour|title }} shirt + {{ o.trouser.colour|lower }} trousers</div>
+          <div class="scorerow">
+            <span class="score">{{ o.score }}<small>/100</small></span>
+            <span class="verdict">{{ 'Great' if tone == 'great' else ('Good' if tone == 'good' else 'Okay') }}</span>
           </div>
-          <div class="info">
-            <div class="headline">
-              <span class="names">{{ o.shirt.colour|title }} + {{ o.trouser.colour|lower }}</span>
-              <span class="score">{{ o.score }}/100</span>
-            </div>
-            <div class="bar" role="img" aria-label="Match score {{ o.score }} out of 100"><i style="width: {{ o.score }}%"></i></div>
-            <p class="reason">{{ o.reason }}</p>
-            <button type="button" class="tryon">Try on avatar</button>
-          </div>
+          <p class="sum">
+            <span class="ln" title="{{ o.reason }}">{{ o.reason }}</span>
+            <span class="ln" title="{{ o.tip }}">{{ o.tip }}</span>
+          </p>
+          <button type="button" class="tryon">{{ icon('user', 18) }}View on avatar</button>
         </li>
       {% endfor %}
     </ul>
@@ -330,9 +303,17 @@ const AV = (() => {
   }
 
   // A garment: flat colour, optional photo clipped to the shape, then shading
-  function garment(id, d, box, colour, img, grad) {
+  // Cut-outs (transparent background) are stretched to fit the garment when their
+  // proportions are close, otherwise shown whole. Plain photos fill the shape.
+  function fitFor(info, box) {
+    if (!info || !info.cut) return 'xMidYMid slice';
+    const r = (info.w / info.h) / (box[2] / box[3]);
+    return (r > 0.7 && r < 1.45) ? 'none' : 'xMidYMid meet';
+  }
+
+  function garment(id, d, box, colour, img, grad, info) {
     const photo = img
-      ? `<image href="${img}" x="${box[0]}" y="${box[1]}" width="${box[2]}" height="${box[3]}" preserveAspectRatio="xMidYMid slice"/>`
+      ? `<image href="${img}" x="${box[0]}" y="${box[1]}" width="${box[2]}" height="${box[3]}" preserveAspectRatio="${fitFor(info, box)}"/>`
       : '';
     return `<clipPath id="${id}"><path d="${d}"/></clipPath>
       <g clip-path="url(#${id})"><rect width="200" height="428" fill="${colour}"/>${photo}</g>
@@ -386,12 +367,12 @@ const AV = (() => {
       <path d="M86 88 L100 112 L114 88 Z" fill="${skin}"/>
 
       <!-- trousers -->
-      ${garment(p + 't', TROUSERS, [56, 228, 88, 164], o.trouser.color, tImg, p + 'g')}
+      ${garment(p + 't', TROUSERS, [56, 228, 88, 164], o.trouser.color, tImg, p + 'g', o.trouser.info)}
       <path d="M79 244 L82 388 M121 244 L118 388" stroke="rgba(0,0,0,.14)" stroke-width="1.3" fill="none"/>
       <path d="M62 236 Q70 250 68 262 M138 236 Q130 250 132 262" stroke="rgba(0,0,0,.14)" stroke-width="1.2" fill="none"/>
 
       <!-- shirt -->
-      ${garment(p + 's', SHIRT, [20, 90, 160, 142], o.shirt.color, sImg, p + 'g')}
+      ${garment(p + 's', SHIRT, [20, 90, 160, 142], o.shirt.color, sImg, p + 'g', o.shirt.info)}
       <path d="M100 110 L100 224" stroke="rgba(0,0,0,.2)" stroke-width="1.2" fill="none"/>
       <g fill="rgba(0,0,0,.35)"><circle cx="100" cy="126" r="1.8"/><circle cx="100" cy="148" r="1.8"/><circle cx="100" cy="170" r="1.8"/><circle cx="100" cy="192" r="1.8"/><circle cx="100" cy="212" r="1.8"/></g>
       <path d="M88 89 L100 111 L89 113 L77 95 Z M112 89 L100 111 L111 113 L123 95 Z" fill="rgba(255,255,255,.2)" ${LINE}/>
@@ -431,6 +412,32 @@ const none = $('none');
 const stageAv = $('stage-av');
 let selected = null;
 
+// Image sizes and whether each photo is a transparent cut-out
+const info = {};
+function loadInfo(url) {
+  return new Promise(resolve => {
+    const im = new Image();
+    im.onload = () => {
+      let cut = false;
+      try {
+        const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
+        const x = c.getContext('2d'); x.drawImage(im, 0, 0);
+        const corners = [[0, 0], [c.width - 1, 0], [0, c.height - 1], [c.width - 1, c.height - 1]];
+        cut = corners.filter(([px, py]) => x.getImageData(px, py, 1, 1).data[3] < 20).length >= 3;
+      } catch (e) {}
+      info[url] = { w: im.naturalWidth, h: im.naturalHeight, cut };
+      resolve();
+    };
+    im.onerror = resolve;
+    im.src = url;
+  });
+}
+function preload() {
+  const urls = new Set();
+  cards.forEach(c => { if (c.dataset.shirtImg) urls.add(c.dataset.shirtImg); if (c.dataset.trouserImg) urls.add(c.dataset.trouserImg); });
+  return Promise.all([...urls].map(loadInfo));
+}
+
 const state = { photos: true, skin: '#D9A67A', shoeStyle: 'sneaker', shoeColour: '#1E1E1E' };
 try {
   const saved = JSON.parse(localStorage.getItem('cf-avatar') || '{}');
@@ -443,8 +450,8 @@ function opts(card) {
   const d = card.dataset;
   return {
     skin: state.skin, photos: state.photos,
-    shirt: { color: d.shirt, img: d.shirtImg },
-    trouser: { color: d.trouser, img: d.trouserImg },
+    shirt: { color: d.shirt, img: d.shirtImg, info: info[d.shirtImg] },
+    trouser: { color: d.trouser, img: d.trouserImg, info: info[d.trouserImg] },
     shoe: { style: state.shoeStyle, color: state.shoeColour }
   };
 }
@@ -455,7 +462,6 @@ function paintAll() {
     const hasPhoto = selected.dataset.shirtImg || selected.dataset.trouserImg;
     $('photo-hint').hidden = !(state.photos && !hasPhoto);
   }
-  cards.forEach(c => AV.render(c.querySelector('.mini svg'), opts(c)));
 }
 
 function syncControls() {
@@ -471,14 +477,15 @@ function syncControls() {
 
 function choose(card) {
   if (!card) return;
-  if (selected) selected.classList.remove('selected');
   selected = card;
-  card.classList.add('selected');
   const d = card.dataset, score = Number(d.score);
   $('st-title').textContent = d.shirtName + ' + ' + d.trouserName.toLowerCase();
   $('st-score').textContent = score + '/100';
   $('st-score').style.color = score >= 90 ? '#1F7A4D' : score >= 75 ? '#1F7A74' : '#B07A00';
-  $('st-why').textContent = d.reason;
+  $('st-why').textContent = d.reason + ' ' + d.tip;
+  const q = 'How can I style a ' + d.shirtName.toLowerCase() + ' with ' + d.trouserName.toLowerCase() +
+            '? Which shoes and accessories should I add?';
+  $('ask-link').href = '{{ url_for("assistant") }}?q=' + encodeURIComponent(q);
   $('st-shirt').style.setProperty('--c', d.shirt);
   $('st-trouser').style.setProperty('--c', d.trouser);
   $('st-shirt-n').textContent = d.shirtName;
@@ -508,14 +515,19 @@ document.querySelectorAll('.myshoes button').forEach(b => b.addEventListener('cl
   state.shoeColour = b.dataset.colour; state.shoeStyle = b.dataset.style;
   save(); syncControls(); paintAll();
 }));
+const dlg = $('avatar-dialog');
 cards.forEach(c => c.querySelector('.tryon').addEventListener('click', () => {
   choose(c);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  dlg.showModal();
+  paintAll();
 }));
+$('dlg-close').addEventListener('click', () => dlg.close());
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });   // click on the dark backdrop
 select.addEventListener('change', apply);
 
 syncControls();
 apply();
+preload().then(paintAll);
 </script>
 {% endif %}
 </body>

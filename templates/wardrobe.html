@@ -1,3 +1,4 @@
+{% from "_icons.html" import icon %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,141 +7,125 @@
 <title>Colour-Fit · My wardrobe</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
 <style>
-  :root {
-    --paper: #FAFAF7;
-    --ink: #1B2440;
-    --muted: #5B6478;
-    --line: #D9DCE3;
-    --navy: #1B2440;
-    --mustard: #D9A21B;
-    --teal: #1F7A74;
-    --error: #B3261E;
-    --success: #1F7A4D;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--ink); background: var(--paper); }
-
-  header {
-    background: var(--navy); color: #fff; padding: 14px 32px;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; flex-wrap: wrap;
-  }
-  .brand { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 1.35rem; margin: 0; }
-  .brand span { color: var(--mustard); }
-  nav { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
-  nav a { color: #C7CCDA; text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
-  nav a:hover { color: #fff; }
-  nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--mustard); }
-  nav .user { color: #C7CCDA; font-size: .92rem; }
-  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible + .sw, input:focus-visible {
-    outline: 3px solid var(--teal); outline-offset: 2px;
-  }
-
   main {
-    max-width: 1120px; margin: 0 auto; padding: 36px 24px 64px;
-    display: grid; grid-template-columns: 330px 1fr; gap: 36px; align-items: start;
+    max-width: 1280px; margin: 0 auto; padding: 20px 24px 32px;
+    display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start;
   }
-  h1, h2 { font-family: "Bricolage Grotesque", sans-serif; margin: 0; }
-  h1 { font-size: 2rem; margin-bottom: 6px; }
-  h2 { font-size: 1.3rem; margin-bottom: 16px; }
-  .sub { color: var(--muted); margin: 0 0 20px; }
+  .flash { grid-column: 1 / -1; display: grid; gap: 8px; }
 
-  .msg { padding: 11px 14px; border-radius: 6px; margin-bottom: 18px; font-size: .95rem; border-left: 4px solid; }
-  .msg.error { background: #FCEDEC; color: var(--error); border-color: var(--error); }
-  .msg.success { background: #E8F5EE; color: var(--success); border-color: var(--success); }
-  .flash { grid-column: 1 / -1; margin: 0; }
-  .flash .msg:last-child { margin-bottom: 0; }
-
-  /* Add form */
+  /* ---------- Add item panel ---------- */
   .add {
-    background: #fff; border: 1.5px solid var(--line); border-radius: 8px;
-    padding: 22px; position: sticky; top: 20px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 16px; position: sticky; top: 16px;
   }
-  .field { margin-bottom: 16px; border: 0; padding: 0; min-width: 0; }
-  label, legend { display: block; font-weight: 500; margin: 0 0 6px; padding: 0; }
+  .add h2 { font-size: 1rem; margin-bottom: 12px; }
+  .field { border: 0; padding: 0; margin: 0 0 14px; min-width: 0; }
+  .field:last-of-type { margin-bottom: 12px; }
+  label, legend { display: block; font-weight: 500; font-size: .82rem; color: var(--muted); margin: 0 0 6px; padding: 0; }
+  legend .cap { color: var(--ink); font-weight: 600; }
   select, input[type="file"] {
-    width: 100%; font: inherit; color: var(--ink);
-    padding: 10px 12px; background: #fff;
-    border: 1.5px solid var(--line); border-radius: 6px;
+    width: 100%; font: inherit; font-size: .9rem; color: var(--ink); background: #fff;
+    padding: 8px 10px; border: 1px solid #D1D5DB; border-radius: 8px;
   }
-  .hint { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
+  select { height: 38px; }
+  .hint { color: var(--muted); font-size: .78rem; margin: 5px 0 0; line-height: 1.4; }
 
-  .choices { display: flex; gap: 8px; flex-wrap: wrap; }
-  .choices label { margin: 0; }
-  .choices input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  .pill {
-    display: inline-block; padding: 8px 14px; border: 1.5px solid var(--line);
-    border-radius: 999px; cursor: pointer; font-weight: 500; font-size: .95rem; background: #fff;
+  /* Category buttons with icons */
+  .cats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .cats input, .swatches input, .auto input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .cat {
+    display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px 8px;
+    border: 1px solid var(--line); border-radius: 10px; cursor: pointer; background: #fff;
+    color: var(--muted); font-size: .8rem; font-weight: 500;
   }
-  .choices input:checked + .pill { background: var(--navy); border-color: var(--navy); color: #fff; }
-  .choices input:focus-visible + .pill { outline: 3px solid var(--teal); outline-offset: 2px; }
+  .cat:hover { border-color: #C4C9D4; color: var(--ink); }
+  .cats input:checked + .cat { border-color: var(--navy); background: var(--tint); color: var(--navy); box-shadow: inset 0 0 0 1px var(--navy); }
+  .cats input:focus-visible + .cat, .auto input:focus-visible + .autobtn { outline: 2px solid var(--focus); outline-offset: 2px; }
 
-  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-  .swatches label { margin: 0; text-align: center; font-weight: 400; font-size: .72rem; color: var(--muted); cursor: pointer; }
-  .swatches input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  .sw {
-    display: block; width: 100%; aspect-ratio: 1; border-radius: 50%;
-    background: var(--c); box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.18); margin-bottom: 4px;
+  /* Colour */
+  .autobtn {
+    display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 12px; margin-bottom: 10px;
+    border: 1px solid var(--line); border-radius: 8px; cursor: pointer; background: #fff;
+    font-size: .88rem; font-weight: 500; color: var(--muted);
   }
-  .swatches input:checked + .sw { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--navy); }
-  .swatches input:focus-visible + .sw { outline: 3px solid var(--teal); outline-offset: 4px; }
-  .swatches input:checked ~ span { color: var(--ink); font-weight: 500; }
+  .auto input:checked + .autobtn { border-color: var(--navy); background: var(--tint); color: var(--navy); box-shadow: inset 0 0 0 1px var(--navy); }
+  .swatches { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .swatches label { margin: 0; cursor: pointer; }
+  .sw { display: block; aspect-ratio: 1; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+  .swatches input:checked + .sw { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--navy); }
+  .swatches input:focus-visible + .sw { outline: 2px solid var(--focus); outline-offset: 3px; }
 
-  .preview { display: none; width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; margin-top: 10px; }
+  /* Photo preview */
+  .detect { margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .detect .stage-img {
+    height: 150px; display: flex; align-items: center; justify-content: center; background-color: #fff;
+    background-image: linear-gradient(45deg, #F1F3F7 25%, transparent 25%, transparent 75%, #F1F3F7 75%),
+                      linear-gradient(45deg, #F1F3F7 25%, transparent 25%, transparent 75%, #F1F3F7 75%);
+    background-size: 14px 14px; background-position: 0 0, 7px 7px;
+  }
+  .detect .stage-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .detect .result { padding: 8px 10px; font-size: .85rem; line-height: 1.4; }
+  .detect .found { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .detect .found i { width: 16px; height: 16px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(0,0,0,.22); }
+  .detect .note { color: var(--muted); margin: 2px 0 0; }
+  .detect.warn { border-color: #E0B84A; }
+  .detect.fail { border-color: var(--error); }
+  .detect.fail .result { color: var(--error); }
+
   .submit {
-    width: 100%; padding: 13px; font: 500 1rem "DM Sans", sans-serif;
-    color: #fff; background: var(--navy); border: 0; border-radius: 6px; cursor: pointer;
+    width: 100%; height: 42px; border: 0; border-radius: 8px; cursor: pointer; background: var(--navy); color: #fff;
+    font: 600 .92rem "Inter", sans-serif; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   }
-  .submit:hover { background: #26325A; }
+  .submit:hover { background: var(--navy-hover); }
 
-  /* Wardrobe grid */
-  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  /* ---------- Wardrobe ---------- */
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .bar h1 { font-size: 1.35rem; display: flex; align-items: baseline; gap: 10px; }
+  .bar h1 small { font-size: .85rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
   .tabs button {
-    font: 500 .95rem "DM Sans", sans-serif; padding: 8px 16px; border-radius: 999px;
-    border: 1.5px solid var(--line); background: #fff; color: var(--ink); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: #fff; color: var(--muted);
+    font: 500 .85rem "Inter", sans-serif; cursor: pointer;
   }
+  .tabs button:hover { color: var(--ink); border-color: #C4C9D4; }
   .tabs button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .tabs .n { opacity: .7; font-weight: 400; }
 
-  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
-  .item { background: #fff; border: 1.5px solid var(--line); border-radius: 8px; overflow: hidden; }
-  .photo { height: 190px; background: var(--c); position: relative; }
-  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .photo { height: 168px; background: var(--c); position: relative; }
+  .photo.has-img { background: #F1F3F7; }
+  .photo img { width: 100%; height: 100%; object-fit: contain; padding: 8px; display: block; }
   .dot {
-    position: absolute; right: 10px; bottom: 10px; width: 22px; height: 22px; border-radius: 50%;
+    position: absolute; right: 8px; bottom: 8px; width: 18px; height: 18px; border-radius: 50%;
     background: var(--c); box-shadow: 0 0 0 2px #fff, inset 0 0 0 1px rgba(0,0,0,.2);
   }
-  .meta { padding: 12px 14px 14px; }
-  .name { font-weight: 500; margin: 0; }
-  .detail { color: var(--muted); font-size: .9rem; margin: 2px 0 10px; }
-  .remove {
-    font: 500 .88rem "DM Sans", sans-serif; background: none; border: 0; padding: 0;
-    color: var(--error); cursor: pointer; text-decoration: underline;
-  }
+  .meta { display: flex; align-items: center; gap: 8px; padding: 8px 6px 8px 12px; }
+  .meta .kind { color: var(--muted); }
+  .meta .txt { flex: 1; min-width: 0; }
+  .name { font-weight: 600; font-size: .85rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .detail { color: var(--muted); font-size: .78rem; margin: 0; }
+  .meta form { margin: 0; }
+  .remove { width: 30px; height: 30px; display: grid; place-items: center; border: 0; background: none; border-radius: 6px; color: #9CA3AF; cursor: pointer; }
+  .remove:hover { background: #FEF2F2; color: var(--error); }
 
-  .empty { border: 2px dashed var(--line); border-radius: 8px; padding: 40px 24px; text-align: center; color: var(--muted); }
-  .empty strong { display: block; color: var(--ink); font-size: 1.15rem; margin-bottom: 6px; }
-  [hidden] { display: none !important; }
+  .empty { border: 1px dashed #CBD0DA; border-radius: var(--radius); padding: 32px 20px; text-align: center; color: var(--muted); background: var(--surface); }
+  .empty strong { display: block; color: var(--ink); font-size: 1rem; margin-bottom: 2px; }
 
   @media (max-width: 860px) {
-    main { grid-template-columns: 1fr; padding: 28px 16px 48px; }
+    main { grid-template-columns: 1fr; padding: 14px 14px 24px; gap: 14px; }
     .add { position: static; }
-    header { padding: 14px 18px; }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <p class="brand">Colour<span>-</span>Fit</p>
-  <nav aria-label="Main">
-    <a href="{{ url_for('wardrobe') }}" aria-current="page">My wardrobe</a>
-    <a href="{{ url_for('combinations') }}">Outfit combinations</a>
-    <span class="user">{{ session.get('username') }}</span>
-    <a href="{{ url_for('logout') }}">Log out</a>
-  </nav>
-</header>
+{% set active = 'wardrobe' %}
+{% include "_header.html" %}
 
 <main>
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -160,24 +145,27 @@
 
       <fieldset class="field">
         <legend>Category</legend>
-        <div class="choices">
+        <div class="cats">
           {% for key, label in categories.items() %}
             <label>
               <input type="radio" name="category" value="{{ key }}" required {% if loop.first %}checked{% endif %}>
-              <span class="pill">{{ label }}</span>
+              <span class="cat">{{ icon(key, 24) }}{{ label }}</span>
             </label>
           {% endfor %}
         </div>
       </fieldset>
 
       <fieldset class="field">
-        <legend>Colour</legend>
+        <legend>Colour <span class="cap" id="colour-cap">· Auto-detect</span></legend>
+        <label class="auto">
+          <input type="radio" name="colour" value="auto" checked>
+          <span class="autobtn">{{ icon('sparkles', 18) }}Auto-detect from photo</span>
+        </label>
         <div class="swatches">
           {% for name, code in colours.items() %}
-            <label>
-              <input type="radio" name="colour" value="{{ name }}" required>
+            <label title="{{ name|title }}">
+              <input type="radio" name="colour" value="{{ name }}" data-label="{{ name|title }}">
               <i class="sw" style="--c: {{ code }}"></i>
-              <span>{{ name|title }}</span>
             </label>
           {% endfor %}
         </div>
@@ -191,33 +179,40 @@
       </div>
 
       <div class="field">
-        <label for="photo">Photo (optional)</label>
+        <label for="photo">Photo</label>
         <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp">
-        <p class="hint">JPG, PNG or WebP, up to 5 MB.</p>
-        <img id="preview" class="preview" alt="Preview of the selected photo">
+        <p class="hint">JPG, PNG or WebP up to 5 MB. One item on a plain background works best.</p>
+        <div class="detect" id="detect" hidden aria-live="polite">
+          <div class="stage-img"><img id="cut" alt="Clothing cut out from your photo"></div>
+          <div class="result" id="result"></div>
+        </div>
       </div>
 
-      <button class="submit" type="submit">Add to wardrobe</button>
+      <button class="submit" type="submit">{{ icon('plus', 18) }}Add to wardrobe</button>
     </form>
   </section>
 
   <!-- Wardrobe -->
   <section aria-labelledby="wardrobe-title">
-    <h1 id="wardrobe-title">My wardrobe</h1>
-    <p class="sub">{{ items|length }} {{ 'item' if items|length == 1 else 'items' }} saved. Add shirts and trousers to get outfit combinations.</p>
+    <div class="bar">
+      <h1 id="wardrobe-title">My wardrobe <small>{{ items|length }} {{ 'item' if items|length == 1 else 'items' }}</small></h1>
+      {% if items %}
+        <div class="tabs" role="group" aria-label="Filter by category">
+          <button type="button" data-filter="all" aria-pressed="true">{{ icon('grid', 16) }}All</button>
+          {% for key, label in categories.items() %}
+            <button type="button" data-filter="{{ key }}" aria-pressed="false">
+              {{ icon(key, 16) }}{{ label }} <span class="n">{{ items|selectattr('category', 'equalto', key)|list|length }}</span>
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
 
     {% if items %}
-      <div class="tabs" role="group" aria-label="Filter by category">
-        <button type="button" data-filter="all" aria-pressed="true">All</button>
-        {% for key, label in categories.items() %}
-          <button type="button" data-filter="{{ key }}" aria-pressed="false">{{ label }}</button>
-        {% endfor %}
-      </div>
-
       <ul class="grid" id="grid">
         {% for it in items %}
           <li class="item" data-category="{{ it.category }}">
-            <div class="photo" style="--c: {{ colours.get(it.colour, '#DDD') }}">
+            <div class="photo{% if it.image %} has-img{% endif %}" style="--c: {{ colours.get(it.colour, '#DDDDDD') }}">
               {% if it.image %}
                 <img src="{{ url_for('static', filename='uploads/' ~ it.image) }}"
                      alt="{{ it.colour|title }} {{ it.category }}" loading="lazy">
@@ -225,11 +220,14 @@
               <span class="dot" title="{{ it.colour|title }}"></span>
             </div>
             <div class="meta">
-              <p class="name">{{ it.colour|title }} {{ it.category }}</p>
-              <p class="detail">{{ it.style }}</p>
+              <span class="kind">{{ icon(it.category, 18) }}</span>
+              <div class="txt">
+                <p class="name">{{ it.colour|title }} {{ it.category }}</p>
+                <p class="detail">{{ it.style }}</p>
+              </div>
               <form method="post" action="{{ url_for('delete_item', item_id=it.id) }}"
                     onsubmit="return confirm('Remove this item from your wardrobe?');">
-                <button class="remove" type="submit">Remove</button>
+                <button class="remove" type="submit" aria-label="Remove {{ it.colour }} {{ it.category }}" title="Remove">{{ icon('trash', 16) }}</button>
               </form>
             </div>
           </li>
@@ -243,20 +241,69 @@
     {% else %}
       <div class="empty">
         <strong>Your wardrobe is empty</strong>
-        Add your first item using the form. Start with a shirt and a pair of trousers.
+        Add your first item. Start with a shirt and a pair of trousers.
       </div>
     {% endif %}
   </section>
 </main>
 
 <script>
-  // Photo preview
+  // Colour caption
+  const cap = document.getElementById('colour-cap');
+  document.querySelectorAll('input[name="colour"]').forEach(r => r.addEventListener('change', () => {
+    cap.textContent = '· ' + (r.value === 'auto' ? 'Auto-detect' : r.dataset.label);
+  }));
+
+  // Photo: remove background and detect colour as soon as a file is chosen
   const photo = document.getElementById('photo');
-  const preview = document.getElementById('preview');
-  photo.addEventListener('change', () => {
+  const box = document.getElementById('detect');
+  const cut = document.getElementById('cut');
+  const result = document.getElementById('result');
+  const form = photo.closest('form');
+  let seq = 0;
+
+  function showResult(cls, html) {
+    box.className = 'detect ' + cls;
+    result.innerHTML = html;
+    box.hidden = false;
+  }
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  photo.addEventListener('change', async () => {
     const f = photo.files[0];
-    if (f) { preview.src = URL.createObjectURL(f); preview.style.display = 'block'; }
-    else { preview.style.display = 'none'; }
+    const mine = ++seq;
+    if (!f) { box.hidden = true; return; }
+    cut.removeAttribute('src');
+    showResult('', 'Reading your photo…');
+    try {
+      const fd = new FormData();
+      fd.append('photo', f);
+      const res = await fetch('{{ url_for("analyze_photo") }}', { method: 'POST', body: fd, credentials: 'same-origin' });
+      const data = await res.json();
+      if (mine !== seq) return;
+      if (!res.ok) { cut.removeAttribute('src'); showResult('fail', esc(data.error || 'Could not read that photo.')); return; }
+      cut.src = data.preview;
+      const name = data.colour.charAt(0).toUpperCase() + data.colour.slice(1);
+      let html = '<div class="found"><i style="--c:' + esc(data.hex) + '"></i>Detected: ' + esc(name) + '</div>';
+      html += data.confidence === 'low'
+        ? '<p class="note">Not sure about this one. Pick the right colour above if it looks off.</p>'
+        : '<p class="note">Wrong? Pick a different colour above.</p>';
+      if (!data.cutout) html += '<p class="note">' + esc(data.note) + '</p>';
+      showResult(data.confidence === 'low' || !data.cutout ? 'warn' : '', html);
+    } catch (e) {
+      if (mine !== seq) return;
+      showResult('warn', 'Preview unavailable. The photo will still be processed when you add it.');
+    }
+  });
+
+  // Auto colour needs a photo
+  form.addEventListener('submit', e => {
+    const auto = form.querySelector('input[name="colour"][value="auto"]').checked;
+    if (auto && !photo.files.length) {
+      e.preventDefault();
+      showResult('fail', 'Choose a photo so the colour can be detected, or pick a colour.');
+      photo.focus();
+    }
   });
 
   // Category filter

@@ -1,0 +1,14 @@
+{% from "_icons.html" import icon %}
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="logo" href="{{ url_for('wardrobe') }}"><span class="logo-mark">{{ icon('hanger', 18) }}</span>Colour-Fit</a>
+    <nav class="nav" aria-label="Main">
+      <a href="{{ url_for('wardrobe') }}" {% if active == 'wardrobe' %}aria-current="page"{% endif %}>{{ icon('shirt', 18) }}<span class="lbl">My wardrobe</span></a>
+      <a href="{{ url_for('combinations') }}" {% if active == 'combinations' %}aria-current="page"{% endif %}>{{ icon('layers', 18) }}<span class="lbl">Outfit combinations</span></a>
+      <a href="{{ url_for('assistant') }}" {% if active == 'assistant' %}aria-current="page"{% endif %}>{{ icon('chat', 18) }}<span class="lbl">Style assistant</span></a>
+    </nav>
+    <span class="spacer"></span>
+    <span class="who">{{ icon('user', 18) }}<span class="lbl">{{ session.get('username') }}</span></span>
+    <a class="logout" href="{{ url_for('logout') }}" title="Log out">{{ icon('logout', 18) }}<span class="lbl">Log out</span></a>
+  </div>
+</header>

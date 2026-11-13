@@ -1,7 +1,7 @@
 """Rule-based colour matching for Colour-Fit.
 
-Each pair of colours gets a score from 0 to 100 and a short reason,
-so the website can rank outfits and explain why they work.
+Each shirt and trouser pair gets a score from 0 to 100 plus two short
+sentences: why the colours work (or don't) and one styling tip.
 """
 
 # Colours that go with almost everything
@@ -48,54 +48,60 @@ def _wheel_gap(a, b):
     return min(gap, 360 - gap)
 
 
-def match_score(shirt, trouser):
-    """Return (score 0-100, reason) for a shirt and trouser colour."""
+def _match(shirt, trouser):
+    """Return (score, reason, tip). Each sentence is short enough for one line."""
     a, b = shirt.strip().lower(), trouser.strip().lower()
     pair = frozenset((a, b))
 
     if pair in CLASHES:
-        return 15, f"{a.title()} and {b} compete for attention."
+        return 15, f"{a.title()} and {b} compete for attention.", "Try a neutral piece to calm the look."
 
     if pair in CLASSIC_PAIRS:
-        return 95, f"{a.title()} with {b} is a classic pairing."
+        return 95, f"{a.title()} with {b} is a classic pairing.", "Dependable for work or a casual day out."
 
     for family in FAMILIES.values():
         if a in family and b in family and a != b:
-            return 85, "Two shades of the same colour look clean together."
+            return 85, "Two shades of one colour look clean.", "Neutral shoes or a belt finish the look."
 
     if a == b and a not in NEUTRALS:
-        return 40, "Matching a bold colour head to toe can feel heavy."
+        return 40, "Head-to-toe bold colour can feel heavy.", "Break it up with neutral shoes."
 
     a_neutral, b_neutral = a in NEUTRALS, b in NEUTRALS
     if a_neutral and b_neutral:
-        return 80, "Neutrals are easy to wear together."
+        return 80, "Neutrals are easy to wear together.", "Add one coloured accessory for interest."
     if a_neutral or b_neutral:
-        return 82, "One neutral keeps the bolder colour in focus."
+        return 82, "A neutral lets the bolder colour lead.", "Keep shoes and accessories simple."
 
     if a in WHEEL and b in WHEEL:
         gap = _wheel_gap(a, b)
         if 150 <= gap <= 180:
-            return 78, "Opposite colours make a strong contrast."
+            return 78, "Opposite colours make a strong contrast.", "Keep accessories neutral to stay sharp."
         if gap <= 60:
-            return 74, "Neighbouring colours blend smoothly."
-        return 45, "These two colours may be hard to balance."
+            return 74, "Neighbouring colours blend smoothly.", "A smooth, easy look for everyday wear."
+        return 45, "These colours may be hard to balance.", "Try a neutral shirt or trousers instead."
 
-    return 50, "No strong rule applies. Try it and judge by eye."
+    return 50, "No strong rule applies. Judge by eye.", "Preview it on the avatar to decide."
+
+
+def match_score(shirt, trouser):
+    """Return (score 0-100, reason) for a shirt and trouser colour."""
+    score, reason, _tip = _match(shirt, trouser)
+    return score, reason
 
 
 def find_combinations(shirts, trousers, min_score=60):
-    """Rank every shirt and trouser pair.
+    """Rank every shirt and trouser pair, best first.
 
-    shirts / trousers: lists of dicts with at least 'id' and 'colour'.
-    Returns a list of dicts sorted by score, best first.
+    shirts / trousers: lists of dicts (or rows) with at least 'colour'.
+    Each result has: shirt, trouser, score, reason, tip.
     """
     results = []
     for s in shirts:
         for t in trousers:
-            score, reason = match_score(s["colour"], t["colour"])
+            score, reason, tip = _match(s["colour"], t["colour"])
             if score >= min_score:
                 results.append({"shirt": s, "trouser": t,
-                                "score": score, "reason": reason})
+                                "score": score, "reason": reason, "tip": tip})
     return sorted(results, key=lambda r: r["score"], reverse=True)
 
 
@@ -105,4 +111,6 @@ if __name__ == "__main__":
     trousers = [{"id": 1, "colour": "beige"}, {"id": 2, "colour": "green"},
                 {"id": 3, "colour": "charcoal"}]
     for r in find_combinations(shirts, trousers):
-        print(r["score"], r["shirt"]["colour"], "+", r["trouser"]["colour"], "-", r["reason"])
+        print(r["score"], r["shirt"]["colour"], "+", r["trouser"]["colour"])
+        print("   ", r["reason"])
+        print("   ", r["tip"])

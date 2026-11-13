@@ -1,1 +1,6 @@
 flask
+pillow
+numpy
+# Optional extras:
+# scipy
+# rembg   (better cut-outs on busy backgrounds; downloads a ~170 MB model on first use)
